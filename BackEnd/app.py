@@ -7,7 +7,9 @@ from functools import wraps
 from routes.auth import auth_bp
 from routes.frontend import frontend_bp
 from routes.logs import logs_bp
-
+from routes.students import students_bp
+from routes.schools import schools_bp
+from routes.attendance import attendance_bp
 app = Flask(__name__, static_folder="dist", static_url_path="/")
 CORS(app, supports_credentials=True)
 app.secret_key = "supersecretkey"  # Change this to a secure key
@@ -24,6 +26,9 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.register_blueprint(auth_bp)
 app.register_blueprint(frontend_bp)
 app.register_blueprint(logs_bp)
+app.register_blueprint(students_bp)
+app.register_blueprint(schools_bp)
+app.register_blueprint(attendance_bp)
 
 
 if __name__ == "__main__":

@@ -20,7 +20,6 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# ✅ User Login
 @auth_bp.route("/api/login", methods=["POST"])
 def login():
     data = request.json
@@ -43,11 +42,12 @@ def login():
     if verify_password(password, user[2]):
         session["user_id"] = user[0]
         session["username"] = user[1]
-     
+        session["role"] = user[3]  # 🔥 Add this!
 
-        return jsonify({"message": "Login successful", }), 200
+        return jsonify({"message": "Login successful"}), 200
 
     return jsonify({"error": "Invalid credentials"}), 401
+
 
 
 # ✅ Logout
@@ -150,24 +150,39 @@ def get_users():
 
     if user_role == "admin":
         users = execute_query(
-        """SELECT 
-            users.id, 
-            users.username, 
-            users.role, 
-            users.user_firstname, 
-            users.user_middlename, 
-            users.user_lastname, 
-            users.user_office, 
-            users.user_email, 
-            users.user_image, 
-            barangays.barangay AS barangay_name
+            """SELECT 
+                users.id, 
+                users.username, 
+                users.role, 
+                users.user_firstname, 
+                users.user_middlename, 
+                users.user_lastname, 
+                users.user_office, 
+                users.user_email, 
+                users.user_image, 
+                barangays.barangay AS barangay_name,
+                barangays.id
             FROM users
-            LEFT JOIN barangays ON users.barangay = barangays.id
-        """
+            LEFT JOIN barangays ON users.barangay = barangays.id"""
         )
     else:
         users = execute_query(
-            "SELECT id, username, role, user_firstname, user_middlename, user_lastname, user_office, user_email, user_image, barangay FROM users LEFT JOIN barangays ON users.barangay = barangays.id WHERE id = %s",
+            """SELECT 
+                users.id, 
+                users.username, 
+                users.role, 
+                users.user_firstname, 
+                users.user_middlename, 
+                users.user_lastname, 
+                users.user_office, 
+                users.user_email, 
+                users.user_image, 
+                barangays.barangay AS barangay_name,
+                barangays.id
+            FROM users
+            LEFT JOIN barangays ON users.barangay = barangays.id
+            WHERE users.id = %s
+            """,
             (user_id,),
         )
 
@@ -183,8 +198,11 @@ def get_users():
             "user_email": u[7],
             "user_image": u[8],
             "barangay": u[9],
+            "barangay_id": u[10]
+
         } for u in users
     ]), 200
+
 
 
 @auth_bp.route("/api/barangay", methods=["GET"])

@@ -35,3 +35,19 @@ def exec_tuple(query, params=(), fetch_one=False, commit=False):
     cursor.close()
     db.close()
     return result
+
+
+def execute_query_many(query, values_list, commit=False):
+    db = get_db_connection()
+    cursor = db.cursor()
+    try:
+        cursor.executemany(query, values_list)
+        if commit:
+            db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f"⚠️ Batch execution error: {e}")
+        raise
+    finally:
+        cursor.close()
+        db.close()

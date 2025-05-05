@@ -4,6 +4,7 @@ from functools import wraps
 from flask import jsonify, session# Password Hashing
 import smtplib
 from email.message import EmailMessage
+from db import execute_query
 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 465
@@ -146,3 +147,22 @@ def send_email(subject, body, to_email, code=None):
         print(f"Error sending email: {e}")
         return False
 
+def log_action(student_record, action):
+    user_id = session.get("user_id")
+    
+    # If no user is authenticated, handle it gracefully
+    if not user_id:
+        print("Error: User is not authenticated.")
+        return  # Optionally raise an exception or return an error message
+    
+    log_query = """
+        INSERT INTO records_logs (user_id, student_record, action)
+        VALUES (%s, %s, %s)
+    """
+    try:
+        # Attempt to execute the query
+        execute_query(log_query, (user_id, student_record, action), commit=True)
+    except Exception as e:
+        # Handle failure in logging, could print or log the error for debugging
+        print(f"Error logging action for ordinance {student_record}: {e}")
+        # Optionally, you can store this in a separate logging table or handle it differently
