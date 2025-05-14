@@ -13,11 +13,18 @@ const LoadingScreen = () => {
 					flex={1}
 					flexDirection="column"
 					gap={3}
+					style={{
+						perspective: 1000, // Enable depth
+					}}
 				>
 					<motion.img
 						src="logo.png"
 						alt="Loading..."
-						style={{ width: 100, height: 100 }}
+						style={{
+							width: 100,
+							height: 100,
+							transformStyle: "preserve-3d",
+						}}
 						initial={{ scale: 0 }}
 						animate={{ rotateY: [0, 360], scale: [0.8, 2, 1] }}
 						transition={{ duration: 2, repeat: Infinity, ease: "linear" }}

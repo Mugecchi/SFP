@@ -10,12 +10,11 @@ const Header = React.memo(() => {
 
 	const pageTitles = {
 		"/dashboard": "Dashboard",
-		"/tables": "Tables",
-		"/Forms": "Forms",
+		"/dailyattendance": "Attendance",
+		"/schools": "Schools",
 		"/login": "Login",
-		"/addrecords": "Add Record",
-		"/documentation": "GFPS Corner",
-		"/logs": "Logs",
+		"/studentsbiorecords": "Students Profile",
+		"/studentshealthdata": "Health Records",
 		"/users": "User Management",
 	};
 	return (

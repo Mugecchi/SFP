@@ -9,8 +9,11 @@ import {
 	DialogTitle,
 	DialogContent,
 	DialogActions,
+	Paper,
 } from "@mui/material";
 import { login } from "../utils/authUser";
+import WaveBackground from "../Includes/WaveBackground";
+import { motion } from "framer-motion";
 const Login = ({ setIsLoggedIn }) => {
 	const navigate = useNavigate();
 
@@ -66,129 +69,145 @@ const Login = ({ setIsLoggedIn }) => {
 		<Box
 			sx={{
 				height: "100vh",
+				position: "relative",
+				overflow: "hidden", // Required
 				display: "flex",
+				background: `  radial-gradient(circle at 30% 30%, #5D378C 0%, transparent 100%),radial-gradient(circle at 70% 70%, #FF7704 0%, transparent 40%) 
+				`,
 				alignItems: "center",
 				justifyContent: "center",
-				backgroundColor: "#5D378C",
-				p: 2,
-				position: "relative",
 			}}
 		>
-			{/* Welcome Section */}
-			<Box
-				sx={{
-					display: { xs: "none", md: "block" },
-					position: "absolute",
-					top: "5%",
-					left: "5%",
-					color: "white",
-					zIndex: 0,
+			<WaveBackground />
+			<motion.div
+				initial={{ opacity: 0, scale: 0 }}
+				animate={{ opacity: 1, scale: 1 }}
+				transition={{
+					scale: { type: "spring", visualDuration: 0.5, bounce: 0.75 },
+					duration: 0.5,
 				}}
+				style={{ position: "absolute", left: "5%", width: "40%" }}
 			>
-				<Typography variant="h2" color="#FF7704" fontWeight={600}>
-					Welcome
-				</Typography>
-				<Typography variant="h4" fontWeight={600}>
-					Cauayan Cares - Archiving System
-				</Typography>
-				<Typography variant="h6">
-					Preserving Records, Empowering Communities
-				</Typography>
-			</Box>
+				<Box
+					sx={{
+						display: { xs: "none", md: "block" },
 
-			{/* Image Section */}
-			<Box
-				sx={{
-					display: { xs: "none", md: "block" },
-					position: "absolute",
-					bottom: "10%",
-					left: "5%",
-					zIndex: 0,
-				}}
-			>
-				<img
-					src="/LoginPoster.svg"
-					alt="Login Poster"
-					style={{ maxWidth: "100%", height: "auto" }}
-				/>
-			</Box>
+						color: "white",
+					}}
+				>
+					<Typography variant="h2" color="#FF7704" fontWeight={600}>
+						Welcome
+					</Typography>
+					<Typography variant="h4" fontWeight={600}>
+						School Feeding Program Management System
+					</Typography>
+					<Typography variant="h6">
+						Streamlining Data. Supporting Students. Strengthening Communities.
+					</Typography>
+				</Box>
+			</motion.div>
 
 			{/* Login Form */}
-			<Box
-				sx={{
-					background: "#FBEAFF",
-					p: 4,
-					borderRadius: "10px",
-					width: { xs: "90%", sm: "60%", md: "30%" },
-					minWidth: "300px",
-					boxShadow: 3,
-					position: { xs: "relative", md: "absolute" },
-					right: { md: "10%" },
+			<motion.div
+				initial={{ opacity: 0, scale: 0.8 }}
+				animate={{ opacity: 1, scale: 1 }}
+				transition={{
+					duration: 0.5,
+					delay: 0.5,
+					scale: { type: "spring", visualDuration: 0.5, bounce: 0.75 },
+				}}
+				style={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+					width: "30%",
+					position: "absolute",
+					minWidth: "400px",
+					right: "10%",
 				}}
 			>
-				<Typography variant="h5" fontWeight="bold" color="#FF7706" gutterBottom>
-					Login
-				</Typography>
-				<Typography color="textSecondary" mb={2}>
-					Please enter your login credentials
-				</Typography>
-
-				{loginError && (
-					<Typography color="error" mb={2}>
-						{loginError}
-					</Typography>
-				)}
-
-				<form onSubmit={handleLogin}>
-					<TextField
-						fullWidth
-						type="text"
-						label="Username"
-						value={username}
-						onChange={(e) => setUsername(e.target.value)}
-						required
-						variant="outlined"
-						margin="normal"
-					/>
-					<TextField
-						fullWidth
-						type="password"
-						label="Password"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						required
-						variant="outlined"
-						margin="normal"
-					/>
-					<Button
-						type="submit"
-						variant="contained"
-						fullWidth
-						sx={{
-							mt: 2,
-							bgcolor: "#5D378C",
-							color: "#fff",
-							":hover": { bgcolor: "#4B2A6F" },
-						}}
+				<Paper
+					sx={{
+						background: "rgba(251, 234, 255, 0.6)", // semi-transparent background
+						backdropFilter: "blur(8px)", // blurs the background behind the paper
+						p: 4,
+						borderRadius: "10px",
+						width: "100%",
+						minWidth: "300px",
+						boxShadow: 3,
+						position: { xs: "relative", md: "absolute" },
+						right: { md: "10%" },
+					}}
+					elevation={5}
+				>
+					<Typography
+						variant="h5"
+						fontWeight="bold"
+						color="#FF7706"
+						gutterBottom
 					>
 						Login
-					</Button>
-				</form>
+					</Typography>
+					<Typography color="textSecondary" mb={2}>
+						Please enter your login credentials
+					</Typography>
 
-				<Typography
-					variant="body2"
-					sx={{
-						mt: 2,
-						textAlign: "center",
-						cursor: "pointer",
-						color: "#5D378C",
-					}}
-					onClick={() => setForgotOpen(true)}
-				>
-					Forgot your password?
-				</Typography>
-			</Box>
+					{loginError && (
+						<Typography color="error" mb={2}>
+							{loginError}
+						</Typography>
+					)}
 
+					<form onSubmit={handleLogin}>
+						<TextField
+							fullWidth
+							type="text"
+							label="Username"
+							value={username}
+							onChange={(e) => setUsername(e.target.value)}
+							required
+							variant="outlined"
+							margin="normal"
+						/>
+						<TextField
+							fullWidth
+							type="password"
+							label="Password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							required
+							variant="outlined"
+							margin="normal"
+						/>
+						<Button
+							type="submit"
+							variant="contained"
+							fullWidth
+							sx={{
+								mt: 2,
+								bgcolor: "#5D378C",
+								color: "#fff",
+								":hover": { bgcolor: "#4B2A6F" },
+							}}
+						>
+							Login
+						</Button>
+					</form>
+
+					{/* <Typography
+						variant="body2"
+						sx={{
+							mt: 2,
+							textAlign: "center",
+							cursor: "pointer",
+							color: "#5D378C",
+						}}
+						onClick={() => setForgotOpen(true)}
+					>
+						Forgot your password?
+					</Typography> */}
+				</Paper>
+			</motion.div>
 			{/* Forgot Password Dialog */}
 			<Dialog open={forgotOpen} onClose={() => setForgotOpen(false)}>
 				<DialogTitle>Forgot Password</DialogTitle>

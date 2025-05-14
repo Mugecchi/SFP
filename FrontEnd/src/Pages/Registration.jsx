@@ -126,7 +126,7 @@ const Registration = () => {
 				user_office: user.user_office,
 				user_email: user.user_email,
 				user_image: user.user_image, // Keep this for form submission
-				barangay: user.barangay,
+				barangay: user.barangay_id,
 			});
 			setSelectedImage(
 				user.user_image ? getAvatarUrl(user.user_image) : "/default-avatar.png"
@@ -457,7 +457,8 @@ const Registration = () => {
 								required
 							>
 								<MenuItem value="admin">Admin</MenuItem>
-								<MenuItem value="user">User</MenuItem>
+								<MenuItem value="teacher">Teacher</MenuItem>
+								<MenuItem value="nutritionist">Nutritionist</MenuItem>
 							</Select>
 						</FormControl>
 

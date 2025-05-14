@@ -41,10 +41,10 @@ export const getAvatarUrl = (filename) => {
 	if (!filename) return "/default-avatar.png"; // Fallback avatar
 	return `${IMG_BASE_URL}/uploads/profile_pictures/${filename}`;
 };
-export const fetchUser = async () => {
+export const fetchUser = () => {
 	return apiCall("get", "/user"); // Assuming "/protected" returns user data if logged in
 };
 
-export const fetchBarangay = async () => {
+export const fetchBarangay = () => {
 	return apiCall("get", "/barangay");
 };

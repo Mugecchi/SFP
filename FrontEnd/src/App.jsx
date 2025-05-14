@@ -10,13 +10,13 @@ import Header from "./Includes/Header";
 import { ContentContainer, ThemeProv } from "./Includes/styledComponents";
 import LoadingScreen from "./Includes/LoadingScreen";
 import { useAuth } from "./utils/useAuth";
-
-// Lazy load pages
-const Dashboard = lazy(() => import("./Pages/Dashboard"));
-const Login = lazy(() => import("./Pages/Login"));
+import SchoolsTable from "./Pages/SchoolsTable";
+import DailyRecord from "./Pages/DailyRecord";
+import Dashboard from "./Pages/Dashboard";
+import Login from "./Pages/Login";
+import HealthData from "./Pages/HealthData";
 const Registration = lazy(() => import("./Pages/Registration"));
-const LogsTable = lazy(() => import("./Pages/LogsTable"));
-
+const StudentsTable = lazy(() => import("./Pages/StudentsTable"));
 const App = () => {
 	// Consume Auth context values using the useAuth hook
 	const { isLoggedIn, user, loading, setIsLoggedIn } = useAuth();
@@ -65,12 +65,24 @@ const App = () => {
 											/>
 
 											<Route
-												path="/logs"
-												element={<ProtectedRoute element={<LogsTable />} />}
-											/>
-											<Route
 												path="/users"
 												element={<ProtectedRoute element={<Registration />} />}
+											/>
+											<Route
+												path="/studentsbiorecords"
+												element={<ProtectedRoute element={<StudentsTable />} />}
+											/>
+											<Route
+												path="/studentshealthdata"
+												element={<ProtectedRoute element={<HealthData />} />}
+											/>
+											<Route
+												path="/schools"
+												element={<ProtectedRoute element={<SchoolsTable />} />}
+											/>
+											<Route
+												path="/dailyattendance"
+												element={<ProtectedRoute element={<DailyRecord />} />}
 											/>
 											<Route
 												path="/login"

@@ -22,7 +22,8 @@ def get_students():
                 sp.birthday,
                 b.id,
                 s.id,
-                sp.student_id
+                sp.student_id,
+                sp.address
 
             FROM student_profile sp
             LEFT JOIN barangays b ON sp.barangay_id = b.id
@@ -44,7 +45,9 @@ def get_students():
             "birthday": r[9],
             "barangay_id": r[10],
             "school_id": r[11],
-            "student_id": r[12]
+            "student_id": r[12],
+            "address": r[13]
+
         }
         for r in result
     ]
@@ -134,7 +137,7 @@ def create_student():
     data = request.get_json()
 
     # Validate input data
-    required_fields = ["first_name","middle_name","last_name", "age", "barangay_id", "school_id", "birthday","sex", "gender","grade_level"]
+    required_fields = ["first_name","middle_name","last_name", "age", "barangay_id", "school_id", "birthday","sex", "gender","grade_level","address"]
     for field in required_fields:
         if field not in data:
             return jsonify({"error": f"Missing field: {field}"}), 400
@@ -149,6 +152,7 @@ def create_student():
     school_id = data["school_id"]
     sex = data["sex"]
     grade_level = data["grade_level"]
+    address = data["address"]
 
     # Check if a student with the same name already exists
     check_query = "SELECT student_id FROM student_profile WHERE first_name = %s AND last_name = %s AND middle_name = %s"
@@ -158,10 +162,10 @@ def create_student():
 
 
     query = """
-        INSERT INTO student_profile (first_name,middle_name,last_name, age,birthday,gender, barangay_id, school_id,sex,grade_level)
-        VALUES (%s, %s, %s, %s, %s,%s,%s,%s,%s , %s)
+        INSERT INTO student_profile (first_name,middle_name,last_name, age,birthday,gender, barangay_id, school_id,sex,grade_level,address)
+        VALUES (%s, %s, %s, %s, %s,%s,%s,%s,%s , %s, %s)
     """
-    params = (first_name,middle_name,last_name, age, birthday,gender, barangay_id, school_id,sex,grade_level)
+    params = (first_name,middle_name,last_name, age, birthday,gender, barangay_id, school_id,sex,grade_level,address)
 
     try:
         execute_query(query, params, commit=True)
