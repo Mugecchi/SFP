@@ -50,7 +50,14 @@ const SexCount = () => {
 
 	return (
 		<ChartParent title="Sex" barColor="var(--green)">
-			<Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
+			<Box
+				sx={{
+					display: "flex",
+					alignItems: "center",
+					width: "100%",
+					justifyContent: "center",
+				}}
+			>
 				{/* Chart Area */}
 				<ChartContainer
 					series={[
@@ -61,6 +68,7 @@ const SexCount = () => {
 							outerRadius: 130,
 							paddingAngle: 5,
 							cornerRadius: 20,
+							startAngle: -45,
 							cx: 200,
 							label: "Sex",
 							highlightScope: { fade: "global", highlight: "item" },

@@ -41,6 +41,7 @@ const Header = React.memo(() => {
 			</Typography>
 			<Box sx={{ display: "flex", alignItems: "center" }}>
 				<Typography
+					color="white"
 					sx={{ marginRight: "15px", fontWeight: "bold", fontSize: "16px" }}
 				>
 					{user?.username || "Guest"}

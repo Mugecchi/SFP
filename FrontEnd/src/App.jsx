@@ -40,21 +40,25 @@ const App = () => {
 	return (
 		<div>
 			<Router>
-				<div style={{ display: "flex", height: "100vh" }}>
-					<div>{isLoggedIn && <Sidebar />}</div>
-					<div
-						style={{ width: "100%", display: "flex", flexDirection: "column" }}
-					>
-						{isLoggedIn && <Header user={user} />}
+				<ThemeProv>
+					<div style={{ display: "flex", height: "100vh" }}>
+						<div>{isLoggedIn && <Sidebar />}</div>
 						<div
 							style={{
-								padding: isLoggedIn ? "20px" : 0,
-								overflowY: "auto",
-								flex: 1,
+								width: "100%",
+								display: "flex",
+								flexDirection: "column",
 							}}
 						>
-							{isLoggedIn ? (
-								<ThemeProv>
+							{isLoggedIn && <Header user={user} />}
+							<div
+								style={{
+									padding: isLoggedIn ? "20px" : 0,
+									overflowY: "auto",
+									flex: 1,
+								}}
+							>
+								{isLoggedIn ? (
 									<ContentContainer>
 										<Routes>
 											<Route path="/" element={<Navigate to="/dashboard" />} />
@@ -96,9 +100,7 @@ const App = () => {
 											/>
 										</Routes>
 									</ContentContainer>
-								</ThemeProv>
-							) : (
-								<ThemeProv>
+								) : (
 									<Routes>
 										<Route
 											path="/login"
@@ -106,11 +108,11 @@ const App = () => {
 										/>
 										<Route path="*" element={<Navigate to="/login" />} />
 									</Routes>
-								</ThemeProv>
-							)}
+								)}
+							</div>
 						</div>
 					</div>
-				</div>
+				</ThemeProv>
 			</Router>
 		</div>
 	);

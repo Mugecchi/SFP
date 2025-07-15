@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { LineChart } from "@mui/x-charts/LineChart";
 import { fetchAttendanceCount } from "../utils/apiStudents";
 import { Box, Skeleton, Typography } from "@mui/material";
 import ChartParent from "./ChartParent";
+import {
+	ChartsTooltip,
+	ChartsXAxis,
+	ChartsYAxis,
+	LineHighlightPlot,
+	LinePlot,
+	MarkPlot,
+	ResponsiveChartContainer,
+} from "@mui/x-charts";
 
 export default function AttendanceHisto() {
 	const [record, setRecord] = useState([]);
@@ -61,23 +69,35 @@ export default function AttendanceHisto() {
 
 	const xAxis = paddedRecord.map((item) => item.date);
 	const yAxis = paddedRecord.map((item) => item.attendance_count);
-	console.log(paddedRecord);
+
 	return (
 		<ChartParent title="Attendance History">
-			<LineChart
+			<ResponsiveChartContainer
 				xAxis={[
-					{ type: "line", data: xAxis, scaleType: "point", label: "Date" },
+					{
+						id: "date",
+						data: xAxis,
+						scaleType: "point",
+						label: "Date",
+					},
 				]}
 				series={[
 					{
+						type: "line",
 						data: yAxis,
 						label: "Attendance Count",
 						color: "var(--orange)",
 					},
 				]}
-				width={1080}
 				height={400}
-			/>
+			>
+				<ChartsXAxis />
+				<ChartsYAxis />
+				<LinePlot />
+				<ChartsTooltip />
+				<MarkPlot />
+				<LineHighlightPlot />
+			</ResponsiveChartContainer>
 		</ChartParent>
 	);
 }

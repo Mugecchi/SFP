@@ -91,7 +91,6 @@ export default function AutoTable({
 	};
 
 	if (loading) return <CircularProgress />;
-	console.log(filteredData);
 
 	return (
 		<div>

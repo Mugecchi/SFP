@@ -5,6 +5,7 @@ import { getSchools } from "../utils/apiSchools";
 import { Button, Typography, Snackbar, Alert, IconButton } from "@mui/material";
 import FormModal from "../Components/FormModal";
 import AddSchoolForm from "../Components/AddSchoolForm";
+import ChartParent from "../Charts/ChartParent";
 
 function SchoolsTable() {
 	const [open, setOpen] = useState(false);
@@ -65,7 +66,12 @@ function SchoolsTable() {
 	};
 
 	return (
-		<WhiteBox>
+		<ChartParent
+			title={"Student Health Record"}
+			slotProps={{
+				minHeight: "calc(90vh - 30px)", // Ensures it stretches properly
+			}}
+		>
 			<AutoTable
 				print
 				fetchDataFn={getSchools}
@@ -104,7 +110,7 @@ function SchoolsTable() {
 					{alert.message}
 				</Alert>
 			</Snackbar>
-		</WhiteBox>
+		</ChartParent>
 	);
 }
 

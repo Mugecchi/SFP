@@ -16,9 +16,116 @@ import {
 	Box,
 	Grid,
 } from "@mui/material";
-import { WhiteBox } from "../Includes/styledComponents";
 import AddStudentForm from "../Components/AddStudentForm";
 import PrintIcon from "@mui/icons-material/PrintOutlined";
+import ChartParent from "../Charts/ChartParent";
+const StudentIDCard = React.forwardRef(({ student, photo }, ref) => (
+	<Box
+		ref={ref}
+		sx={{
+			border: "1px solid #000",
+			padding: 2,
+			fontFamily: "Arial",
+			borderRadius: "20px",
+			display: "flex",
+			maxHeight: "710px",
+			maxWidth: "650px",
+			margin: "auto", // center horizontally
+		}}
+	>
+		<Grid container>
+			<Grid
+				item
+				xs={12}
+				sx={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
+				{photo ? (
+					<Box
+						component="img"
+						src={photo}
+						alt="Student"
+						sx={{
+							width: 150,
+							height: 150,
+							objectFit: "cover",
+							border: "1px solid #333",
+						}}
+					/>
+				) : (
+					<Typography variant="body2" color="textSecondary">
+						<Box
+							alt="Student-No Photo"
+							sx={{
+								width: 150,
+								height: 150,
+								objectFit: "cover",
+								justifyContent: "center",
+								display: "flex",
+								alignItems: "center",
+								border: "1px solid #333",
+							}}
+						>
+							No Photo
+						</Box>
+					</Typography>
+				)}
+			</Grid>
+			<Grid item xs={12}>
+				<Box
+					sx={{
+						display: "flex",
+						flexDirection: "column",
+						gap: 1,
+						justifyContent: "center",
+					}}
+				>
+					<Typography variant="h6">{student.school_name}</Typography>
+				</Box>
+				<Typography>Student ID: {student.student_id}</Typography>
+				<Typography>
+					Name:{" "}
+					{`${student.first_name} ${student.middle_name} ${student.last_name}`}
+				</Typography>
+				<Typography>Sex: {student.sex}</Typography>
+				<Typography>Age: {student.age}</Typography>
+				<Typography>
+					Grade: {student.grade_level ? `Grade ${student.grade_level}` : "N/A"}
+				</Typography>
+				<Typography>
+					Address: {student.address} {student.barangay_name}
+				</Typography>
+			</Grid>
+		</Grid>
+		<style jsx="true" global>{`
+			@media print {
+				body {
+					display: flex;
+					justify-content: center;
+					align-items: flex-start;
+					padding: 20px;
+					height: 100vh;
+					margin: 0;
+				}
+
+				#root {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					height: 100vh;
+				}
+
+				.MuiDialog-root,
+				.MuiDialog-container {
+					display: none !important;
+				}
+			}
+		`}</style>
+	</Box>
+));
 const StudentsTable = () => {
 	const [open, setOpen] = useState(false);
 	const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -30,83 +137,32 @@ const StudentsTable = () => {
 		message: "",
 		severity: "success",
 	});
-	const [printStudent, setPrintStudent] = useState(null);
 	const [openPreview, setOpenPreview] = useState(false);
-	const printRef = useRef();
-	const handlePrint = useReactToPrint({
-		content: () => printRef.current,
+	const [printStudent, setPrintStudent] = useState(null);
+
+	const componentRef = React.useRef(null);
+
+	const handleAfterPrint = React.useCallback(() => {
+		setSelectedStudent(null);
+		setStudentPhoto(null);
+		setOpenPreview(false);
+	}, []);
+
+	const handleBeforePrint = React.useCallback(() => {
+		return Promise.resolve(); // Can do async setup here if needed
+	}, []);
+
+	const printFn = useReactToPrint({
+		contentRef: componentRef,
+		documentTitle: "Student_ID",
+		onAfterPrint: handleAfterPrint,
+		onBeforePrint: handleBeforePrint,
 	});
 
 	const handleOpenPrintPreview = (student) => {
 		setPrintStudent(student);
 		setOpenPreview(true);
 	};
-
-	const handleConfirmPrint = () => {
-		handlePrint();
-		setOpenPreview(false);
-	};
-
-	const StudentIDCard = React.forwardRef(({ student, photo }, ref) => (
-		<Box
-			ref={ref}
-			sx={{
-				border: "1px solid #000",
-				padding: 2,
-				fontFamily: "Arial",
-				display: "flex",
-				maxHeight: "210px",
-				maxWidth: "550px",
-			}}
-		>
-			<Grid container>
-				<Grid item xs={8}>
-					<Typography variant="h6">{student.school_name}</Typography>
-					<Typography>Student ID: {student.student_id}</Typography>
-					<Typography>
-						Name:{" "}
-						{`${student.first_name} ${student.middle_name} ${student.last_name}`}
-					</Typography>
-					<Typography>Sex: {student.sex}</Typography>
-					<Typography>Age: {student.age}</Typography>
-					<Typography>
-						Grade:{" "}
-						{student.grade_level ? `Grade ${student.grade_level}` : "N/A"}
-					</Typography>
-					<Typography>
-						Address: {student.address} {student.barangay_name}
-					</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={4}
-					sx={{
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-				>
-					{photo ? (
-						<Box
-							component="img"
-							src={photo}
-							alt="Student"
-							sx={{
-								width: 150,
-								height: 150,
-								objectFit: "cover",
-								border: "1px solid #333",
-							}}
-						/>
-					) : (
-						<Typography variant="body2" color="textSecondary">
-							No Photo
-						</Typography>
-					)}
-				</Grid>
-			</Grid>
-		</Box>
-	));
 
 	const columns = [
 		{ label: "Student I.D.", accessor: (r) => r?.student_id },
@@ -119,14 +175,14 @@ const StudentsTable = () => {
 
 		{
 			label: "Year Level",
-			accessor: (r) => (r.grade_level ? `Grade ${r.grade_level}` : "N/A"),
+			accessor: (r) => r?.grade_level,
 		},
 
 		{
 			label: <>Address</>,
 			accessor: (r) => (
 				<>
-					{r?.address} {r?.barangay_name}
+					{r?.address === "N/A" ? "" : r?.address} {r?.barangay_name}
 				</>
 			),
 		},
@@ -163,7 +219,12 @@ const StudentsTable = () => {
 
 	return (
 		<div>
-			<WhiteBox>
+			<ChartParent
+				title={"Student Profile"}
+				slotProps={{
+					minHeight: "calc(90vh - 30px)", // Ensures it stretches properly
+				}}
+			>
 				<AutoTable
 					print
 					fetchDataFn={getStudents}
@@ -204,10 +265,12 @@ const StudentsTable = () => {
 						{alert.message}
 					</Alert>
 				</Snackbar>
-			</WhiteBox>
+			</ChartParent>
 			<Dialog
 				open={openPreview}
-				onClose={() => setOpenPreview(false)}
+				onClose={() => {
+					setOpenPreview(false);
+				}}
 				maxWidth="sm"
 				fullWidth
 			>
@@ -215,19 +278,19 @@ const StudentsTable = () => {
 				<DialogContent>
 					{printStudent && (
 						<StudentIDCard
-							ref={printRef}
+							ref={componentRef}
 							student={printStudent}
 							photo={studentPhoto}
 						/>
 					)}
 				</DialogContent>
 				<DialogActions>
-					<Button variant="outlined" component="label">
-						Upload Photo
+					<label htmlFor="upload-photo">
 						<input
+							accept="image/*"
+							id="upload-photo"
 							type="file"
 							hidden
-							accept="image/*"
 							onChange={(e) => {
 								const file = e.target.files[0];
 								if (file) {
@@ -238,12 +301,22 @@ const StudentsTable = () => {
 								}
 							}}
 						/>
+						<Button variant="outlined" component="span">
+							Upload Photo
+						</Button>
+					</label>
+
+					<Button
+						onClick={() => {
+							setOpenPreview(false);
+							setSelectedStudent(null);
+							setStudentPhoto(null);
+						}}
+					>
+						Cancel
 					</Button>
 
-					<Button onClick={() => setOpenPreview(false)}>Cancel</Button>
-					<Button onClick={handleConfirmPrint} variant="contained">
-						Print
-					</Button>
+					<Button onClick={printFn}>Print</Button>
 				</DialogActions>
 			</Dialog>
 		</div>

@@ -1,16 +1,21 @@
 import { Box, Paper, Typography } from "@mui/material";
-import React from "react";
 
-const ChartParent = ({ children, title, barColor = "var(--orange)" }) => {
+const ChartParent = ({
+	children,
+	title,
+	barColor = "var(--orange)",
+	slotProps,
+}) => {
 	return (
 		<Paper
 			elavtion={5}
 			sx={{
 				p: "10px 8px",
-				maxWidth: "1150px",
 				minHeight: "350px",
 				borderRadius: "14px",
+				position: "relative",
 				overflow: "hidden",
+				...(slotProps || []),
 			}}
 		>
 			<Box

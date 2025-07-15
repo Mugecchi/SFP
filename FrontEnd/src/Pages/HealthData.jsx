@@ -55,6 +55,10 @@ export default function HealthData() {
 			),
 			accessor: (r) => r?.weight,
 		},
+		{
+			label: "Prev BMI",
+			accessor: (r) => r?.prev_bmi,
+		},
 		{ label: "BMI", accessor: (r) => <>{r?.bmi}</> },
 		{
 			label: "BMI Status",

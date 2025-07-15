@@ -93,33 +93,46 @@ def get_daily_attendance_count():
 @login_required
 def get_bmi_categories():
     try:
-        query = """
+        
+        query = """WITH bmi_data AS (
     SELECT 
-    CASE
-        WHEN latest_weight / POW(latest_height / 100, 2) < 18.5 THEN 'Underweight'
-        WHEN latest_weight / POW(latest_height / 100, 2) BETWEEN 18.5 AND 24.9 THEN 'Normal weight'
-        WHEN latest_weight / POW(latest_height / 100, 2) >= 25 AND latest_weight / POW(latest_height / 100, 2) < 30 THEN 'Overweight'
-        ELSE 'Obese'
-    END AS bmi_category,
-    COUNT(*) AS category_count
-FROM (
-    SELECT 
-        student_id,
-        MAX(height) AS latest_height, 
-        MAX(weight) AS latest_weight,
-        MAX(created_at) AS latest_created_at
-    FROM health_records
-    WHERE hr_id IN (
-        SELECT MAX(hr_id) 
+        CASE
+            WHEN latest_weight / POW(latest_height / 100, 2) < 18.5 THEN 'Underweight'
+            WHEN latest_weight / POW(latest_height / 100, 2) BETWEEN 18.5 AND 24.9 THEN 'Normal weight'
+            WHEN latest_weight / POW(latest_height / 100, 2) >= 25 AND latest_weight / POW(latest_height / 100, 2) < 30 THEN 'Overweight'
+            ELSE 'Obese'
+        END AS bmi_category
+    FROM (
+        SELECT 
+            student_id,
+            MAX(height) AS latest_height, 
+            MAX(weight) AS latest_weight
         FROM health_records
+        WHERE hr_id IN (
+            SELECT MAX(hr_id) 
+            FROM health_records
+            GROUP BY student_id
+        )
         GROUP BY student_id
-    )
-    GROUP BY student_id
-) AS latest_records
-GROUP BY bmi_category;
-
-
-        """
+    ) AS latest_records
+),
+all_categories AS (
+    SELECT 'Underweight' AS category
+    UNION ALL
+    SELECT 'Normal weight'
+    UNION ALL
+    SELECT 'Overweight'
+    UNION ALL
+    SELECT 'Obese'
+)
+SELECT 
+    ac.category,
+    COUNT(bd.bmi_category) AS category_count
+FROM all_categories ac
+LEFT JOIN bmi_data bd ON ac.category = bd.bmi_category
+GROUP BY ac.category
+ORDER BY ac.category;
+"""
         result = execute_query(query)
         bmi_categories = [
             {

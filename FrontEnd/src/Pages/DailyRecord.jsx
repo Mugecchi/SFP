@@ -29,11 +29,6 @@ function DailyRecord() {
 	const handleAttendanceMarking = async () => {
 		const inputId = nameInput.trim();
 
-		if (!inputId || inputId !== String(currentRecord?.student_id)) {
-			alert("Please enter the correct student ID.");
-			return;
-		}
-
 		try {
 			await addAttendance(currentRecord.student_id, {
 				student_id: currentRecord.student_id,
